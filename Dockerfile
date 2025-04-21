@@ -16,13 +16,23 @@ WORKDIR /app
 RUN <<STEPS
   apt-get update -qq \
   && apt-get install --no-install-recommends -y \
+  curl \
+  gnupg \
+  lsb-release \
+  ca-certificates \
+  && echo 'deb http://apt.postgresql.org/pub/repos/apt/debian/ bookworm main' '>' /etc/apt/sources.list.d/pgdg.list \
+  && apt install curl ca-certificates gnupg lsb-release \
+  && curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg \
+  && echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" | tee /etc/apt/sources.list.d/pgdg.list \
+  && apt-get update -qq \
+  && apt-get install --no-install-recommends -y \
   chromium \
   curl \
   imagemagick \
   libjemalloc2 \
   nodejs \
   npm \
-  postgresql-client \
+  postgresql-client-17 \
   tmux \
   && rm -rf /var/lib/apt/lists /var/cache/apt/archives
 STEPS
